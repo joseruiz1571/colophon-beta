@@ -39,15 +39,15 @@ Every claim in `SPEC.md` §8 / §10. A claim is `done` only when its probe has b
 | C33 | done | `EvidenceStore rejects a duplicate id` / `hash mismatch` |
 | C34 | done | `controls file defines at least 8 controls` |
 | C35 | done | `control themes are present` |
-| C36 | done | `breach trace` writes schema-valid OSCAL; demo writes `out/demo/*/report/assessment-results.json` |
+| C36 | done | Validated with Ajv + `ajv-formats` against the official NIST 1.1.2 schema (`test/report.test.ts`, demo reports). Note: `bunx ajv-cli --spec=draft2020` cannot load the official file's draft-07 `$schema`; CI uses the same Ajv validator as the report writer. |
 | C37 | done | `citation missing-id throws`; report `store.requireCited` |
 | C38 | done | `narrative states what the bundle does not prove` |
 | C39 | done | `breach trace marks at least one control not-satisfied` |
 | C40 | done | `writes report evidence trace and manifest`; refuses non-empty dir |
 | C41 | done | `verify names a changed file` |
 | C42 | partial | Local `bundle sign` / `verify --pub` wrap Cosign key-pair (demo + `src/bundle/sign.ts`). Keyless sign/verify is in `.github/workflows/ci.yml` on push to `main` only — PR Fulcio identities are not `refs/heads/main`, so the pinned identity cannot verify a PR build. |
-| C43 | done | `bun run demo` (probed on the builder VM); writes `out/demo/<run-id>/` |
-| C44 | done | Unique `out/demo/<run-id>/`; two consecutive runs do not share a directory |
+| C43 | done | `bun run demo` on this VM: exit 0, ~8.5s, summary table printed, signed bundle under `out/demo/<run-id>/` |
+| C44 | done | Two consecutive demos (~8.5s and ~8.1s) wrote distinct `out/demo/` run ids |
 | C45 | done | `bun test` (≥60) and `bun run typecheck` |
 | C46 | partial | `.github/workflows/ci.yml` contains install, typecheck, bun test, opa test, opa fmt, schema validation, demo, bundle verify, keyless Cosign, secret scan. Green-on-default-branch is not proven until the first successful `main` run. Keyless verify is push-to-main only (see C42). |
 | C47 | done | `README.md` quickstart (2 commands), five stages, proves / does-not-prove |

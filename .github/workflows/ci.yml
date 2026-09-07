@@ -63,6 +63,22 @@ jobs:
       - name: bun run demo
         run: bun run demo
 
+      - name: Validate demo OSCAL against vendored NIST schema
+        run: |
+          bun -e '
+            import { readdirSync, readFileSync } from "node:fs";
+            import { validateOscal } from "./src/lib/schema.ts";
+            for (const d of readdirSync("out/demo")) {
+              const p = `out/demo/${d}/report/assessment-results.json`;
+              const issues = validateOscal(JSON.parse(readFileSync(p, "utf8")));
+              if (issues.length) {
+                console.error(p, issues);
+                process.exit(1);
+              }
+              console.log("oscal ok", p);
+            }
+          '
+
       - name: colophon bundle verify
         run: |
           set -euo pipefail
@@ -89,4 +105,4 @@ jobs:
         run: |
           curl -fsSL -o gitleaks.tar.gz https://github.com/gitleaks/gitleaks/releases/download/v8.24.3/gitleaks_8.24.3_linux_x64.tar.gz
           tar -xzf gitleaks.tar.gz gitleaks
-          ./gitleaks detect --no-git -v --source .
+          ./gitleaks detect --no-git -v --source . --config .gitleaks.toml

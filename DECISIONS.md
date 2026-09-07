@@ -75,7 +75,7 @@ This document records every design choice left open by `SPEC.md`, plus the opera
 ## F7 Report
 
 - Controls live in `controls/agent-controls.yaml` (nine controls). The engine interprets `check.type` over the collected evidence. This is assessment logic, not tool allow/deny.
-- OSCAL 1.1.2 Assessment Results are validated against the vendored official NIST schema (`schemas/vendor/oscal_assessment-results_schema-1.1.2.json`, draft-07, downloaded from the v1.1.2 GitHub release).
+- OSCAL 1.1.2 Assessment Results are validated against the vendored official NIST schema (`schemas/vendor/oscal_assessment-results_schema-1.1.2.json`, draft-07, downloaded from the v1.1.2 GitHub release). Instance validation uses Ajv draft-07 plus `ajv-formats`. The C36 probe's `ajv-cli --spec=draft2020` flag does not load a draft-07 `$schema`; the official file is kept byte-identical to the NIST release.
 - Citation invariant: every `relevant-evidence.href` (after stripping `#`) must exist in the run's evidence store or the report refuses to write (`missing evidence id`).
 - `colophon report --session` reads `trace/<id>.jsonl`. `--trace` is also accepted (C39 breach fixture).
 

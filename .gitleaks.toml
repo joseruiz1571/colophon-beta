@@ -1,0 +1,10 @@
+title = "colophon"
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Demo and local outputs are not committed; Cosign keypairs live only under out/"
+paths = [
+  '''(^|/)out/''',
+  '''(^|/)trace/''',
+]
