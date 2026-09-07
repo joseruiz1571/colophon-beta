@@ -1,0 +1,11 @@
+id: 00000000-0000-4000-8000-000000000002
+name: missing-risk-tier
+owner: qa@acme.example
+autonomy_level: assistive
+tools:
+  - name: fs.read
+    data_access: read
+    data_classes: [filesystem]
+    requires_approval: false
+sandbox:
+  write_paths: []

@@ -1,0 +1,10 @@
+{
+  "events": [
+    {
+      "event_id": "syn-ct-0001",
+      "event_name": "GetBucketEncryption",
+      "username": "auditor@acme.example",
+      "source_ip": "192.0.2.10"
+    }
+  ]
+}

@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://colophon.example/schemas/agent-card.schema.json",
+  "title": "Colophon Agent Card",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "spec_version",
+    "card_type",
+    "metadata",
+    "classification",
+    "autonomy",
+    "tools",
+    "decision_boundaries",
+    "escalation",
+    "governance",
+    "evidence"
+  ],
+  "properties": {
+    "spec_version": { "type": "string", "const": "1.0.0" },
+    "card_type": { "type": "string", "const": "agent" },
+    "metadata": {
+      "type": "object",
+      "required": ["id", "name", "owner", "exported_at"],
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "owner": { "type": "string" },
+        "exported_at": { "type": "string" },
+        "canonical_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+      },
+      "additionalProperties": false
+    },
+    "classification": {
+      "type": "object",
+      "required": ["risk_tier", "next_review"],
+      "properties": {
+        "risk_tier": { "type": "string", "enum": ["low", "medium", "high", "critical"] },
+        "next_review": { "type": "string", "format": "date" }
+      },
+      "additionalProperties": false
+    },
+    "autonomy": {
+      "type": "object",
+      "required": ["level"],
+      "properties": {
+        "level": {
+          "type": "string",
+          "enum": ["assistive", "supervised", "delegated", "autonomous_bounded", "autonomous"]
+        },
+        "human_in_loop": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "tools": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "data_access", "data_classes", "requires_approval"],
+        "properties": {
+          "name": { "type": "string" },
+          "data_access": { "type": "string", "enum": ["read", "write", "none"] },
+          "data_classes": { "type": "array", "items": { "type": "string" } },
+          "requires_approval": { "type": "boolean" },
+          "allowed_scopes": { "type": "array", "items": { "type": "string" } }
+        },
+        "additionalProperties": false
+      }
+    },
+    "sandbox": {
+      "type": "object",
+      "required": ["write_paths"],
+      "properties": {
+        "write_paths": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": false
+    },
+    "decision_boundaries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "description"],
+        "properties": {
+          "id": { "type": "string" },
+          "description": { "type": "string" },
+          "allowed_repositories": { "type": "array", "items": { "type": "string" } },
+          "allowed_url_prefixes": { "type": "array", "items": { "type": "string" } }
+        },
+        "additionalProperties": false
+      }
+    },
+    "escalation": {
+      "type": "object",
+      "required": ["kill_switch"],
+      "properties": {
+        "contact": { "type": "string" },
+        "kill_switch": {
+          "type": "object",
+          "required": ["available"],
+          "properties": {
+            "available": { "type": "boolean" },
+            "mechanism": { "type": "string" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "governance": {
+      "type": "object",
+      "required": ["control_mappings"],
+      "properties": {
+        "control_mappings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["control_id", "framework_ref"],
+            "properties": {
+              "control_id": { "type": "string" },
+              "framework_ref": { "type": "string" }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["kind", "description"],
+        "properties": {
+          "kind": { "type": "string" },
+          "description": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

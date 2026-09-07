@@ -1,0 +1,5 @@
+{
+  "url": "https://status.github.example/health",
+  "status": "ok",
+  "synthetic": true
+}

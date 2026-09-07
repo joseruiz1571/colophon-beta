@@ -1,0 +1,12 @@
+node_modules/
+out/
+trace/
+*.key
+cosign.key
+cosign.pub
+.DS_Store
+*.bak
+tmp/
+.colophon-tmp/
+fixtures/sandbox/*
+!fixtures/sandbox/.gitkeep

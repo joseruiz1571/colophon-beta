@@ -1,0 +1,6 @@
+{
+  "repository": "other-org/private",
+  "private": true,
+  "default_branch": "main",
+  "note": "Out of scope for the evidence-reader agent."
+}

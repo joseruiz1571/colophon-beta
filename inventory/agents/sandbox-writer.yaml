@@ -1,0 +1,44 @@
+id: 1a2b3c4d-5e6f-4789-8abc-def012345678
+name: sandbox-writer
+owner: platform@acme.example
+risk_tier: low
+autonomy_level: assistive
+next_review: "2027-12-31"
+description: >
+  Low-risk agent with a write tool that requires a one-shot approval
+  before any path under the sandbox may be written.
+tools:
+  - name: fs.read
+    data_access: read
+    data_classes: [filesystem]
+    requires_approval: false
+  - name: fs.write
+    data_access: write
+    data_classes: [filesystem]
+    requires_approval: true
+  - name: repo.list
+    data_access: read
+    data_classes: [repository]
+    requires_approval: false
+sandbox:
+  write_paths:
+    - fixtures/sandbox/
+decision_boundaries:
+  - id: sandbox-writes
+    description: Writes are limited to fixtures/sandbox/ and require approval.
+    allowed_repositories:
+      - acme-corp/web
+escalation:
+  contact: platform@acme.example
+  kill_switch:
+    available: true
+    mechanism: Withdraw the single-use approval and revoke the Card.
+governance:
+  control_mappings:
+    - control_id: CTRL-APPROVAL-ENFORCED
+      framework_ref: "NIST AI RMF MANAGE-2.3"
+    - control_id: CTRL-NO-SANDBOX-ESCAPE
+      framework_ref: "MITRE ATLAS AML.T0051"
+evidence:
+  - kind: trace
+    description: Hash-chained gate decisions including approval fingerprints
