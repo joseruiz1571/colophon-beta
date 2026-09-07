@@ -45,11 +45,11 @@ Every claim in `SPEC.md` §8 / §10. A claim is `done` only when its probe has b
 | C39 | done | `breach trace marks at least one control not-satisfied` |
 | C40 | done | `writes report evidence trace and manifest`; refuses non-empty dir |
 | C41 | done | `verify names a changed file` |
-| C42 | partial | Local `bundle sign` / `verify --pub` wrap Cosign key-pair (demo + `src/bundle/sign.ts`). Keyless sign/verify is in `.github/workflows/ci.yml` on push to `main` only — PR Fulcio identities are not `refs/heads/main`, so the pinned identity cannot verify a PR build. |
+| C42 | done | Local key-pair wrap in `src/bundle/sign.ts` / demo. Keyless `verify-blob` printed `Verified OK` on `main` run 34161106840 with the locked identity. |
 | C43 | done | `bun run demo` on this VM: exit 0, ~8.5s, summary table printed, signed bundle under `out/demo/<run-id>/` |
 | C44 | done | Two consecutive demos (~8.5s and ~8.1s) wrote distinct `out/demo/` run ids |
 | C45 | done | `bun test` (≥60) and `bun run typecheck` |
-| C46 | partial | `.github/workflows/ci.yml` contains install, typecheck, bun test, opa test, opa fmt, schema validation, demo, bundle verify, keyless Cosign, secret scan. PR `prove` is green on `b77f120`. Green-on-`main` is not proven until merge. Keyless verify is push-to-main only (see C42). |
+| C46 | done | `.github/workflows/ci.yml` has the ten steps. `gh run list --branch main` conclusion `success` (run 34161106840), including keyless verify-blob and gitleaks. |
 | C47 | done | `README.md` quickstart (2 commands), five stages, proves / does-not-prove |
 | C48 | done | this file, 50 claim rows |
 | C49 | done | `sha256sum SPEC.md` = `10e07085e0e56f210b8f152d7caa45b88a4dfd746bf4b1c027cd6fd812d34796` |
@@ -65,6 +65,6 @@ Every claim in `SPEC.md` §8 / §10. A claim is `done` only when its probe has b
 
 ## Gaps
 
-- Keyless Cosign verify against the pinned `refs/heads/main` identity cannot succeed on pull-request workflow runs. The workflow still contains the step; it is gated to `push` (not `pull_request`).
+- Keyless Cosign verify is gated to `push` (not `pull_request`) because Fulcio identities on PRs are `refs/pull/...`, not `refs/heads/main`. The `main` push run verified OK.
 - `C18` is implemented and unit-covered; a full MCP client against an invalid Card is not a dedicated bun test (the gate process fail-closes at startup and denies every call).
 - `LiveAwsProvider` methods throw unless the operator supplies `--live-aws` and `AWS_*`. No live call is made in this repository.
