@@ -1,0 +1,5 @@
+{
+  "bucket": "acme-evidence.example",
+  "sse_algorithm": "aws:kms",
+  "bucket_key_enabled": true
+}

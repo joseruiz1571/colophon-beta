@@ -1,0 +1,15 @@
+id: approval-flow
+name: One-shot approval for a sandbox write
+description: >
+  Two identical fs.write calls. The first consumes the matching approval
+  fingerprint; the second must escalate again.
+agent_id: 1a2b3c4d-5e6f-4789-8abc-def012345678
+calls:
+  - name: fs.write
+    arguments:
+      path: fixtures/sandbox/approved-note.txt
+      content: sandbox-ok
+  - name: fs.write
+    arguments:
+      path: fixtures/sandbox/approved-note.txt
+      content: sandbox-ok

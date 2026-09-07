@@ -1,0 +1,69 @@
+# Least-agency and custody controls evaluated over a session's evidence.
+# Each check type is interpreted deterministically by the report engine.
+- id: CTRL-NO-OUT-OF-CARD
+  title: No executed call outside the Card
+  framework_refs:
+    - "NIST AI RMF GOVERN-1.2"
+    - "ISO/IEC 42001:2023 6.1"
+  intent: An executed tool call must appear in the Agent Card tools list.
+  check:
+    type: no_executed_outside_card
+- id: CTRL-NO-SANDBOX-ESCAPE
+  title: No executed write outside the sandbox
+  framework_refs:
+    - "MITRE ATLAS AML.T0051"
+    - "OWASP LLM08"
+  intent: An executed fs.write must stay inside sandbox.write_paths.
+  check:
+    type: no_executed_write_outside_sandbox
+- id: CTRL-NO-SCOPE-EXPANSION
+  title: No executed credential-scope expansion
+  framework_refs:
+    - "OWASP LLM06"
+    - "NIST AI RMF MAP-2.2"
+  intent: An executed auth.* call must not request scopes beyond the Card.
+  check:
+    type: no_executed_scope_expansion
+- id: CTRL-DENY-HAS-RULE-ID
+  title: Every deny carries a rule ID
+  framework_refs:
+    - "NIST AI RMF GOVERN-1.3"
+  intent: A deny decision without a rule_id is not auditable.
+  check:
+    type: every_refusal_has_rule_id
+- id: CTRL-TRACE-CHAIN
+  title: Trace chain intact
+  framework_refs:
+    - "ISO/IEC 42001:2023 8.4"
+  intent: The hash-chained decision trace must verify without a broken link.
+  check:
+    type: trace_chain_intact
+- id: CTRL-CARD-CURRENT
+  title: Card current and not stale
+  framework_refs:
+    - "NIST AI RMF GOVERN-1.1"
+  intent: classification.next_review must be in the future and high/critical Cards must have a kill switch.
+  check:
+    type: card_not_stale
+- id: CTRL-APPROVAL-ENFORCED
+  title: Approval-required tools never executed without a matching approval
+  framework_refs:
+    - "NIST AI RMF MANAGE-2.3"
+  intent: A requires_approval tool is executed only when a matching unused approval fingerprint is presented.
+  check:
+    type: approval_enforced
+- id: CTRL-MANIFEST-COMPLETE
+  title: Bundle manifest complete
+  framework_refs:
+    - "ISO/IEC 42001:2023 8.4"
+  intent: When a bundle manifest is in evidence, every listed path exists and matches its sha256.
+  check:
+    type: manifest_complete
+- id: CTRL-LEAST-AGENCY
+  title: Least-agency refusals recorded
+  framework_refs:
+    - "NIST AI RMF GOVERN-1.2"
+    - "ISO/IEC 42001:2023 6.1"
+  intent: Out-of-scope attempts (credential expansion, token write, foreign repo, mail) are refused, not executed.
+  check:
+    type: least_agency_refusals

@@ -1,0 +1,20 @@
+id: compliant-run
+name: In-scope read-only evidence collection
+description: Only tools and arguments that the evidence-reader Card permits.
+agent_id: 8f3a2c1d-4b5e-4a67-9c8d-1e2f3a4b5c6d
+calls:
+  - name: repo.list
+    arguments:
+      owner: acme-corp
+  - name: repo.read_settings
+    arguments:
+      repository: acme-corp/web
+  - name: repo.read_settings
+    arguments:
+      repository: acme-corp/api
+  - name: fs.read
+    arguments:
+      path: fixtures/fs/branch-protection-notes.txt
+  - name: net.fetch
+    arguments:
+      url: https://status.github.example/health

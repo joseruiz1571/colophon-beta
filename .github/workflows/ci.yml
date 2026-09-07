@@ -1,0 +1,108 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  prove:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.2.21"
+
+      - name: Install OPA
+        run: |
+          curl -fsSL -o opa https://openpolicyagent.org/downloads/v1.4.2/opa_linux_amd64_static
+          chmod +x opa
+          sudo mv opa /usr/local/bin/opa
+          opa version
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3
+        with:
+          cosign-release: v2.5.0
+
+      - name: Install
+        run: bun install
+
+      - name: Typecheck
+        run: bun run typecheck
+
+      - name: bun test
+        run: bun test
+
+      - name: opa test
+        run: opa test policy/ -v
+
+      - name: opa fmt
+        run: opa fmt --diff policy/
+
+      - name: Schema validation of shipped Declarations and Cards
+        run: |
+          set -euo pipefail
+          for f in inventory/agents/*.yaml; do
+            bun run colophon -- declare validate "$f"
+          done
+          for f in cards/*.card.json; do
+            bun run colophon -- card validate "$f"
+            bun run colophon -- card verify "$f"
+            bun run colophon -- card lint "$f"
+          done
+
+      - name: bun run demo
+        run: bun run demo
+
+      - name: Validate demo OSCAL against vendored NIST schema
+        run: |
+          bun -e '
+            import { readdirSync, readFileSync } from "node:fs";
+            import { validateOscal } from "./src/lib/schema.ts";
+            for (const d of readdirSync("out/demo")) {
+              const p = `out/demo/${d}/report/assessment-results.json`;
+              const issues = validateOscal(JSON.parse(readFileSync(p, "utf8")));
+              if (issues.length) {
+                console.error(p, issues);
+                process.exit(1);
+              }
+              console.log("oscal ok", p);
+            }
+          '
+
+      - name: colophon bundle verify
+        run: |
+          set -euo pipefail
+          dir=$(ls -d out/demo/*/ | head -1)
+          bun run colophon -- bundle verify "$dir"
+
+      - name: Keyless Cosign sign and verify
+        if: github.event_name != 'pull_request'
+        run: |
+          set -euo pipefail
+          dir=$(ls -d out/demo/*/ | head -1)
+          cosign sign-blob --yes \
+            --output-certificate "${dir}manifest.cert.pem" \
+            --output-signature "${dir}manifest.json.sig" \
+            "${dir}manifest.json"
+          cosign verify-blob \
+            --certificate "${dir}manifest.cert.pem" \
+            --signature "${dir}manifest.json.sig" \
+            --certificate-identity "https://github.com/joseruiz1571/colophon-beta/.github/workflows/ci.yml@refs/heads/main" \
+            --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+            "${dir}manifest.json"
+
+      - name: Secret scan
+        run: |
+          curl -fsSL -o gitleaks.tar.gz https://github.com/gitleaks/gitleaks/releases/download/v8.24.3/gitleaks_8.24.3_linux_x64.tar.gz
+          tar -xzf gitleaks.tar.gz gitleaks
+          ./gitleaks detect --no-git -v --source . --config .gitleaks.toml

@@ -1,0 +1,103 @@
+{
+  "spec_version": "1.0.0",
+  "card_type": "agent",
+  "autonomy": {
+    "level": "supervised",
+    "human_in_loop": true
+  },
+  "tools": [
+    {
+      "name": "fs.read",
+      "data_access": "read",
+      "data_classes": [
+        "filesystem"
+      ],
+      "requires_approval": false
+    },
+    {
+      "name": "repo.list",
+      "data_access": "read",
+      "data_classes": [
+        "repository"
+      ],
+      "requires_approval": false
+    },
+    {
+      "name": "repo.read_settings",
+      "data_access": "read",
+      "data_classes": [
+        "repository"
+      ],
+      "requires_approval": false
+    },
+    {
+      "name": "net.fetch",
+      "data_access": "read",
+      "data_classes": [
+        "network"
+      ],
+      "requires_approval": false
+    }
+  ],
+  "sandbox": {
+    "write_paths": []
+  },
+  "decision_boundaries": [
+    {
+      "id": "in-scope-repos",
+      "description": "Only acme-corp application repositories listed here may be read.",
+      "allowed_repositories": [
+        "acme-corp/web",
+        "acme-corp/api"
+      ]
+    },
+    {
+      "id": "in-scope-urls",
+      "description": "Network fetches are limited to synthetic .example status endpoints.",
+      "allowed_url_prefixes": [
+        "https://status.github.example/"
+      ]
+    }
+  ],
+  "governance": {
+    "control_mappings": [
+      {
+        "control_id": "CTRL-NO-OUT-OF-CARD",
+        "framework_ref": "NIST AI RMF GOVERN-1.2"
+      },
+      {
+        "control_id": "CTRL-NO-SCOPE-EXPANSION",
+        "framework_ref": "OWASP LLM06"
+      },
+      {
+        "control_id": "CTRL-LEAST-AGENCY",
+        "framework_ref": "ISO/IEC 42001:2023 6.1"
+      }
+    ]
+  },
+  "evidence": [
+    {
+      "kind": "trace",
+      "description": "Hash-chained gate decisions for each tool call"
+    },
+    {
+      "kind": "card",
+      "description": "The Agent Card in force for the session"
+    }
+  ],
+  "metadata": {
+    "id": "aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeee2",
+    "name": "high-no-kill",
+    "owner": "qa@acme.example",
+    "exported_at": "2026-09-07T00:00:00.000Z"
+  },
+  "classification": {
+    "risk_tier": "high",
+    "next_review": "2027-12-31"
+  },
+  "escalation": {
+    "kill_switch": {
+      "available": false
+    }
+  }
+}

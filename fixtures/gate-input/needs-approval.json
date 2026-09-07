@@ -1,0 +1,100 @@
+{
+  "card": {
+    "spec_version": "1.0.0",
+    "card_type": "agent",
+    "metadata": {
+      "id": "1a2b3c4d-5e6f-4789-8abc-def012345678",
+      "name": "sandbox-writer",
+      "owner": "platform@acme.example",
+      "exported_at": "2026-09-07T00:00:00.000Z",
+      "canonical_sha256": "6bf32aa7216723387abe846931ba30a442a4a41cc47b941936faacdb4a88f7db"
+    },
+    "classification": {
+      "risk_tier": "low",
+      "next_review": "2027-12-31"
+    },
+    "autonomy": {
+      "level": "assistive",
+      "human_in_loop": true
+    },
+    "tools": [
+      {
+        "name": "fs.read",
+        "data_access": "read",
+        "data_classes": [
+          "filesystem"
+        ],
+        "requires_approval": false
+      },
+      {
+        "name": "fs.write",
+        "data_access": "write",
+        "data_classes": [
+          "filesystem"
+        ],
+        "requires_approval": true
+      },
+      {
+        "name": "repo.list",
+        "data_access": "read",
+        "data_classes": [
+          "repository"
+        ],
+        "requires_approval": false
+      }
+    ],
+    "sandbox": {
+      "write_paths": [
+        "fixtures/sandbox/"
+      ]
+    },
+    "decision_boundaries": [
+      {
+        "id": "sandbox-writes",
+        "description": "Writes are limited to fixtures/sandbox/ and require approval.",
+        "allowed_repositories": [
+          "acme-corp/web"
+        ]
+      }
+    ],
+    "escalation": {
+      "contact": "platform@acme.example",
+      "kill_switch": {
+        "available": true,
+        "mechanism": "Withdraw the single-use approval and revoke the Card."
+      }
+    },
+    "governance": {
+      "control_mappings": [
+        {
+          "control_id": "CTRL-APPROVAL-ENFORCED",
+          "framework_ref": "NIST AI RMF MANAGE-2.3"
+        },
+        {
+          "control_id": "CTRL-NO-SANDBOX-ESCAPE",
+          "framework_ref": "MITRE ATLAS AML.T0051"
+        }
+      ]
+    },
+    "evidence": [
+      {
+        "kind": "trace",
+        "description": "Hash-chained gate decisions including approval fingerprints"
+      }
+    ]
+  },
+  "call": {
+    "name": "fs.write",
+    "arguments": {
+      "path": "fixtures/sandbox/approved-note.txt",
+      "content": "sandbox-ok"
+    }
+  },
+  "context": {
+    "session_id": "00000000-0000-4000-8000-000000000099",
+    "call_index": 0,
+    "prior_decisions": [],
+    "approvals": [],
+    "approval_fingerprint": "bdbe234743b6862ccb470597b97146564ae7be94faae4da2bccfb963d171931b"
+  }
+}

@@ -1,0 +1,3 @@
+Synthetic notes for acme-corp repositories.
+Branch protection is expected on acme-corp/web and acme-corp/api.
+Domains are .example only. No live network is used.

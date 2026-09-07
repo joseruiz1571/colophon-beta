@@ -1,0 +1,12 @@
+{
+  "repository": "acme-corp/api",
+  "private": false,
+  "default_branch": "main",
+  "branch_protection": {
+    "main": {
+      "required_reviews": 1,
+      "require_status_checks": true,
+      "enforce_admins": false
+    }
+  }
+}

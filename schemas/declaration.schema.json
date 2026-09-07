@@ -1,0 +1,132 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://colophon.example/schemas/declaration.schema.json",
+  "title": "Colophon Agent Declaration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "name",
+    "owner",
+    "risk_tier",
+    "autonomy_level",
+    "tools",
+    "sandbox"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
+      "description": "UUID v4 identifier for this agent declaration."
+    },
+    "name": { "type": "string", "minLength": 1 },
+    "owner": { "type": "string", "minLength": 1 },
+    "risk_tier": { "type": "string", "enum": ["low", "medium", "high", "critical"] },
+    "autonomy_level": {
+      "type": "string",
+      "enum": ["assistive", "supervised", "delegated", "autonomous_bounded", "autonomous"]
+    },
+    "next_review": { "type": "string", "format": "date" },
+    "description": { "type": "string" },
+    "tools": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/tool" }
+    },
+    "sandbox": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["write_paths"],
+      "properties": {
+        "write_paths": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "decision_boundaries": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/boundary" }
+    },
+    "escalation": { "$ref": "#/$defs/escalation" },
+    "governance": {
+      "type": "object",
+      "properties": {
+        "control_mappings": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/mapping" }
+        }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["kind", "description"],
+        "properties": {
+          "kind": { "type": "string" },
+          "description": { "type": "string" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "tool": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "data_access", "data_classes", "requires_approval"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "data_access": { "type": "string", "enum": ["read", "write", "none"] },
+        "data_classes": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "requires_approval": { "type": "boolean" },
+        "allowed_scopes": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "boundary": {
+      "type": "object",
+      "required": ["id", "description"],
+      "properties": {
+        "id": { "type": "string" },
+        "description": { "type": "string" },
+        "allowed_repositories": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "allowed_url_prefixes": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "escalation": {
+      "type": "object",
+      "required": ["kill_switch"],
+      "properties": {
+        "contact": { "type": "string" },
+        "kill_switch": {
+          "type": "object",
+          "required": ["available"],
+          "properties": {
+            "available": { "type": "boolean" },
+            "mechanism": { "type": "string" }
+          }
+        }
+      }
+    },
+    "mapping": {
+      "type": "object",
+      "required": ["control_id", "framework_ref"],
+      "properties": {
+        "control_id": { "type": "string" },
+        "framework_ref": { "type": "string" }
+      }
+    }
+  }
+}

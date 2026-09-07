@@ -1,0 +1,11 @@
+id: 00000000-0000-4000-8000-000000000001
+name: missing-owner
+risk_tier: low
+autonomy_level: assistive
+tools:
+  - name: fs.read
+    data_access: read
+    data_classes: [filesystem]
+    requires_approval: false
+sandbox:
+  write_paths: []

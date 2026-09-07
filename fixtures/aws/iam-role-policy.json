@@ -1,0 +1,14 @@
+{
+  "role_name": "colophon-auditor-example",
+  "policy": {
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Sid": "SyntheticReadOnly",
+        "Effect": "Allow",
+        "Action": ["s3:GetEncryptionConfiguration"],
+        "Resource": "arn:aws:s3:::acme-evidence.example"
+      }
+    ]
+  }
+}
