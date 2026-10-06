@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> **Historical / earlier line.** This repository is an earlier Colophon line, kept as an archive. Active development lives at [joseruiz1571/colophon](https://github.com/joseruiz1571/colophon).
+
 # Colophon
 
 A colophon is the statement at the back of a book that records who made it, where, and how. This CLI is that statement for AI agents: a signed, machine-readable record of what an agent was allowed to do, what it tried to do, what it was refused, and the evidence behind each of those facts.
