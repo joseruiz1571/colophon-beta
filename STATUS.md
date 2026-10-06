@@ -45,11 +45,11 @@ Every claim in `SPEC.md` §8 / §10. A claim is `done` only when its probe has b
 | C39 | done | `breach trace marks at least one control not-satisfied` |
 | C40 | done | `writes report evidence trace and manifest`; refuses non-empty dir |
 | C41 | done | `verify names a changed file` |
-| C42 | done | Local key-pair sign/verify in demo + `src/bundle/sign.ts`. Keyless sign/verify proven on push to `main`: Actions run https://github.com/joseruiz1571/colophon-beta/actions/runs/34161106840 (step Keyless Cosign sign and verify). PR runs still skip keyless verify (Fulcio identity is refs/pull/...). |
+| C42 | done | Local key-pair wrap in `src/bundle/sign.ts` / demo. Keyless `verify-blob` printed `Verified OK` on `main` run 34161106840 with the locked identity. |
 | C43 | done | `bun run demo` on this VM: exit 0, ~8.5s, summary table printed, signed bundle under `out/demo/<run-id>/` |
 | C44 | done | Two consecutive demos (~8.5s and ~8.1s) wrote distinct `out/demo/` run ids |
 | C45 | done | `bun test` (≥60) and `bun run typecheck` |
-| C46 | done | `.github/workflows/ci.yml` all required steps; green on `main` at https://github.com/joseruiz1571/colophon-beta/actions/runs/34161106840. Keyless Cosign gated to push (not pull_request). |
+| C46 | done | `.github/workflows/ci.yml` has the ten steps. `gh run list --branch main` conclusion `success` (run 34161106840), including keyless verify-blob and gitleaks. |
 | C47 | done | `README.md` quickstart (2 commands), five stages, proves / does-not-prove |
 | C48 | done | this file, 50 claim rows |
 | C49 | done | `sha256sum SPEC.md` = `10e07085e0e56f210b8f152d7caa45b88a4dfd746bf4b1c027cd6fd812d34796` |
@@ -65,6 +65,6 @@ Every claim in `SPEC.md` §8 / §10. A claim is `done` only when its probe has b
 
 ## Gaps
 
-- Keyless Cosign verify is gated to `push` on `main` (PR Fulcio identities are not `refs/heads/main`); proven green on default-branch run 34161106840.
+- Keyless Cosign verify is gated to `push` (not `pull_request`) because Fulcio identities on PRs are `refs/pull/...`, not `refs/heads/main`. The `main` push run verified OK.
 - `C18` is implemented and unit-covered; a full MCP client against an invalid Card is not a dedicated bun test (the gate process fail-closes at startup and denies every call).
 - `LiveAwsProvider` methods throw unless the operator supplies `--live-aws` and `AWS_*`. No live call is made in this repository.
