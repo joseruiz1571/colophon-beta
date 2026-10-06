@@ -1,5 +1,4 @@
-> [!IMPORTANT]
-> **Historical / earlier line.** This repository is an earlier Colophon line, kept as an archive. Active development lives at [joseruiz1571/colophon](https://github.com/joseruiz1571/colophon).
+> This repository is one of two independent builds against an identical spec, kept as a record of that experiment. The current build renames the Agent Card to a Record and moves to OSCAL 1.2.3: https://github.com/joseruiz1571/colophon. This repository is not maintained.
 
 # Colophon
 
